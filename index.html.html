@@ -261,6 +261,27 @@
   .status .dot{ width:6px; height:6px; border-radius:50%; background:var(--brand); }
   .status.dev{ color:var(--warm-dark); background:var(--warm-tint); }
   .status.dev .dot{ background:var(--warm); }
+  .up-filters-toggle{
+    width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px;
+    background:var(--bg-2); border:1px solid var(--line-strong); border-radius:10px;
+    padding:10px 12px; font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase;
+    letter-spacing:.05em; color:var(--ink-soft); cursor:pointer; transition:.14s ease;
+  }
+  .up-filters-toggle:hover{ border-color:var(--brand); color:var(--brand-dark); }
+  .up-filters-toggle:focus-visible{ outline:none; box-shadow:var(--focus); }
+  .up-filters-toggle svg{ width:13px; height:13px; transition:transform .18s ease; }
+  .up-filters.open .up-filters-toggle{ border-radius:10px 10px 0 0; border-bottom-color:transparent; color:var(--brand-dark); }
+  .up-filters.open .up-filters-toggle svg{ transform:rotate(180deg); }
+  .up-links{
+    display:none; flex-direction:column; gap:8px; background:var(--bg-2); border:1px solid var(--line-strong);
+    border-top:none; border-radius:0 0 10px 10px; padding:11px; animation:fade .16s ease both;
+  }
+  .up-filters.open .up-links{ display:flex; }
+  .up-link-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .up-link-row .lbl{ font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; }
+  .up-link-row .btn{ padding:7px 13px; font-size:12px; }
+  .up-link-row .btn svg{ width:11px; height:11px; }
+  .up-link-row .tag{ margin:0; }
   .star{ appearance:none; border:none; background:transparent; cursor:pointer; color:var(--ink-faint); width:29px; height:29px; border-radius:8px; display:flex; align-items:center; justify-content:center; transition:.14s; }
   .star:hover{ background:var(--bg-2); color:var(--warm); }
   .star:focus-visible{ outline:none; box-shadow:var(--focus); }
@@ -388,7 +409,8 @@
     search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>',
     rows:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>',
     cols:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="8" height="16"/><rect x="13" y="4" width="8" height="16"/></svg>',
-    lock:'<svg class="ico-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:12px;height:12px;margin-left:5px;vertical-align:middle"><rect x="4.5" y="10.5" width="15" height="9.5" rx="2"/><path d="M7.5 10.5V7.5a4.5 4.5 0 0 1 9 0v3"/></svg>'
+    lock:'<svg class="ico-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:12px;height:12px;margin-left:5px;vertical-align:middle"><rect x="4.5" y="10.5" width="15" height="9.5" rx="2"/><path d="M7.5 10.5V7.5a4.5 4.5 0 0 1 9 0v3"/></svg>',
+    chevron:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>'
   };
 
   /* ---------- Config ---------- */
@@ -455,12 +477,20 @@
       {
         id:'incidencias', title:'Incidencias', area:'Anulaciones', icon:IC.ban,
         desc:'Análisis de anulaciones por operador: Picking, Montacarguistas, Monitores.',
-        due:'2026-09-25T00:00:00'
+        due:'2026-09-25T00:00:00',
+        links:[
+          { label:'Dashboard', url:null },
+          { label:'Data', url:'http://10.130.32.134/reports/report/Inventario/Monitor%20incidencias' }
+        ]
       },
       {
         id:'anulaciones-fillrate', title:'Anulaciones Fill Rate', area:'Anulaciones', icon:IC.ban,
         desc:'Motivos de anulaciones, cantidad de pedidos cancelados e incumplimiento del Fill Rate.',
-        due:'2026-09-30T00:00:00'
+        due:'2026-09-30T00:00:00',
+        links:[
+          { label:'Dashboard', url:null },
+          { label:'Data', url:'http://10.130.32.225:8085/ReportesGT/report/Slotting/Fillrate%20diario%20Fechas' }
+        ]
       }
     ]
   };
@@ -810,6 +840,17 @@
               '</div>' +
               '<div class="card-body"><h3>'+up.title+'</h3><span class="kb">'+up.area+'</span>' +
                 '<p class="desc" style="margin-top:8px">'+up.desc+'</p></div>' +
+              '<div class="up-filters">' +
+                '<button type="button" class="up-filters-toggle">Filtros'+IC.chevron+'</button>' +
+                '<div class="up-links">' +
+                  (up.links||[]).map(function(l){
+                    return '<div class="up-link-row"><span class="lbl">'+l.label+'</span>' +
+                      (l.url ? '<a class="btn primary" href="'+l.url+'" target="_blank" rel="noopener">Abrir'+IC.go+'</a>'
+                             : '<span class="tag off">Próximamente</span>') +
+                    '</div>';
+                  }).join('') +
+                '</div>' +
+              '</div>' +
               '<div class="card-foot"><span class="last">'+countdownText(up.due)+'</span></div>' +
             '</div>';
           }).join('') +
@@ -824,6 +865,10 @@
         '<p>El equipo de <strong>Slotting Guatemala</strong> está desarrollando esta sección. Estará disponible en una próxima actualización del portal.</p>' +
         '<a class="btn primary" href="#/inicio">Volver al inicio '+IC.arrow+'</a>' +
       '</div>' + upHtml + '</section>';
+
+    Array.prototype.forEach.call(viewEl.querySelectorAll('.up-filters-toggle'), function(btn){
+      btn.addEventListener('click', function(){ btn.closest('.up-filters').classList.toggle('open'); });
+    });
   }
 
   /* ---------- Router ---------- */
