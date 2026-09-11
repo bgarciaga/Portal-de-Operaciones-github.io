@@ -410,7 +410,9 @@
     rows:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>',
     cols:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="8" height="16"/><rect x="13" y="4" width="8" height="16"/></svg>',
     lock:'<svg class="ico-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:12px;height:12px;margin-left:5px;vertical-align:middle"><rect x="4.5" y="10.5" width="15" height="9.5" rx="2"/><path d="M7.5 10.5V7.5a4.5 4.5 0 0 1 9 0v3"/></svg>',
-    chevron:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>'
+    chevron:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>',
+    inventory:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="8" height="8" rx="1"/><rect x="13" y="4" width="8" height="8" rx="1"/><rect x="8" y="13" width="8" height="7" rx="1"/></svg>',
+    support:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="2.5" y="13" width="5" height="6" rx="2"/><rect x="16.5" y="13" width="5" height="6" rx="2"/><path d="M20 19a4 4 0 0 1-4 4h-2"/></svg>'
   };
 
   /* ---------- Config ---------- */
@@ -419,8 +421,10 @@
     { id:'dashboards',  label:'Dashboards' },
     { id:'reportes',    label:'Reportes',       soon:true },
     { id:'anulaciones', label:'Anulaciones' },
+    { id:'inventarios', label:'Inventarios',    soon:true },
     { id:'layout',      label:'Layout General', url:'https://bgarciaga.github.io/Layout.github.io/' },
-    { id:'herramientas',label:'Herramientas' }
+    { id:'herramientas',label:'Herramientas' },
+    { id:'soporte',     label:'Soporte',        soon:true }
   ];
 
   var MODULES = [
@@ -430,11 +434,15 @@
       desc:'Informes periódicos de operación: productividad, movimientos y cumplimiento de KPIs.' },
     { id:'anulaciones', icon:IC.ban,    title:'Anulaciones', status:'on', forceLabel:true,
       desc:'Registro y control de anulaciones de operaciones, con motivo, responsable y trazabilidad.' },
+    { id:'inventarios', icon:IC.inventory, title:'Inventarios', status:'off',
+      desc:'Control y seguimiento de inventarios del CD: existencias, ajustes y conteos cíclicos.' },
     { id:'layout',      icon:IC.layout, title:'Layout General', status:'on',
       url:'https://bgarciaga.github.io/Layout.github.io/',
       desc:'Plano general del centro de distribución: zonificación, pasillos y distribución de familias.' },
     { id:'herramientas',icon:IC.tool,   title:'Herramientas', status:'on',
-      desc:'Utilidades internas del equipo de slotting: calculadoras, conversores y plantillas.' }
+      desc:'Utilidades internas del equipo de slotting: calculadoras, conversores y plantillas.' },
+    { id:'soporte',     icon:IC.support,   title:'Soporte', status:'off',
+      desc:'Canal de soporte para incidencias y solicitudes relacionadas con el portal y la operación.' }
   ];
 
   var DASHBOARDS = [
@@ -468,7 +476,9 @@
 
   /* Modulos con clave de acceso. La clave vive en el codigo fuente:
      protege de un vistazo casual, no de alguien que inspeccione el HTML. */
-  var LOCKS = { herramientas:'Slotting2026$' };
+  var LOCKS = { herramientas:'Slotting2026$', inventarios:'INV2026$' };
+  var ALERT_EMAIL = 'slottingguatemala@gmail.com';
+  var MAX_ATTEMPTS = 3;
 
   /* Tarjetas de "proximo lanzamiento" para modulos aun en desarrollo.
      due: fecha objetivo fija (cuenta regresiva de 15 dias desde su creacion). */
@@ -573,9 +583,25 @@
      asi que cada nueva entrada vuelve a pedir la clave. */
   var unlockedModule=null;
   var lockOverlay=null;
+  var failAttempts={};
+
+  /* No hay backend: no se puede enviar un correo automatico de verdad desde
+     HTML estatico. Esto abre un borrador de correo (mailto) precargado hacia
+     ALERT_EMAIL; el usuario que tenga la pestaña abierta debe darle "Enviar"
+     en su cliente de correo para que la alerta realmente salga. */
+  function sendAlertEmail(id){
+    var mod=MODULES.filter(function(m){ return m.id===id; })[0];
+    var name=mod?mod.title:id;
+    var when=new Date().toLocaleString('es-GT');
+    var subject='Alerta de seguridad - Portal Ransa ('+name+')';
+    var body='Se registraron '+MAX_ATTEMPTS+' intentos fallidos de clave en el modulo "'+name+'".\n\nFecha: '+when+'\nCD: Villa Nueva';
+    window.open('mailto:'+ALERT_EMAIL+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body), '_blank');
+  }
+
   function closeLock(){ if(lockOverlay){ lockOverlay.remove(); lockOverlay=null; } }
   function requestUnlock(id, onSuccess){
     closeLock();
+    failAttempts[id]=failAttempts[id]||0;
     lockOverlay=document.createElement('div');
     lockOverlay.className='lockbox-overlay';
     lockOverlay.innerHTML =
@@ -594,8 +620,20 @@
     var input=document.getElementById('lockInput'), err=document.getElementById('lockErr');
     input.focus();
     function tryUnlock(){
-      if(input.value===LOCKS[id]){ closeLock(); onSuccess(); }
-      else{ err.classList.add('show'); input.value=''; input.focus(); }
+      if(input.value===LOCKS[id]){
+        failAttempts[id]=0;
+        closeLock(); onSuccess();
+        return;
+      }
+      failAttempts[id]++;
+      if(failAttempts[id]>=MAX_ATTEMPTS){
+        sendAlertEmail(id);
+        err.textContent='Clave incorrecta. Se genero una alerta por '+MAX_ATTEMPTS+' intentos fallidos.';
+        failAttempts[id]=0;
+      } else {
+        err.textContent='Clave incorrecta.';
+      }
+      err.classList.add('show'); input.value=''; input.focus();
     }
     document.getElementById('lockOk').addEventListener('click', tryUnlock);
     document.getElementById('lockCancel').addEventListener('click', closeLock);
