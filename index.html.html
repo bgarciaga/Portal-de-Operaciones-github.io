@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portal de Operaciones · Ransa Guatemala</title>
+<title>Portal en mantenimiento · Ransa Guatemala</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23009B3A'/%3E%3Ctext x='50' y='70' font-size='60' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap%22 rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#F5F5F2; --bg-2:#ECEDE7; --surface:#FFFFFF;
@@ -17,8 +17,6 @@
     --warm:#FF9201; --warm-tint:#FFF1DC; --warm-dark:#C96F00;
     --shadow:0 1px 2px rgba(27,29,25,.04), 0 10px 30px -14px rgba(27,29,25,.16);
     --shadow-hi:0 2px 8px rgba(27,29,25,.06), 0 22px 48px -18px rgba(0,120,44,.30);
-    --r:14px; --focus:0 0 0 3px rgba(0,155,58,.35);
-    --nav-h:64px;
   }
   :root[data-theme="dark"]{
     --bg:#13150E; --bg-2:#1A1D15; --surface:#1E211A;
@@ -29,29 +27,29 @@
     --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 34px -16px rgba(0,0,0,.6);
     --shadow-hi:0 2px 10px rgba(0,0,0,.35), 0 26px 54px -20px rgba(47,190,99,.35);
   }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#13150E; --bg-2:#1A1D15; --surface:#1E211A;
+      --ink:#F1F2EC; --ink-soft:#A9AC9F; --ink-faint:#73766A;
+      --line:#2F3327; --line-strong:#3D4233;
+      --brand:#2FBE63; --brand-dark:#27A755; --brand-tint:#15311E;
+      --warm:#FFAA38; --warm-tint:#33260F; --warm-dark:#FFAA38;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 34px -16px rgba(0,0,0,.6);
+      --shadow-hi:0 2px 10px rgba(0,0,0,.35), 0 26px 54px -20px rgba(47,190,99,.35);
+    }
+  }
   *{ box-sizing:border-box; }
-  html{ scroll-behavior:smooth; }
+  html,body{ height:100%; }
   body{
-    margin:0; color:var(--ink); min-height:100vh;
-    font-family:'Inter',system-ui,sans-serif; -webkit-font-smoothing:antialiased;
+    margin:0; color:var(--ink); font-family:'Inter',system-ui,sans-serif; -webkit-font-smoothing:antialiased;
     background:
       radial-gradient(1000px 560px at 100% -6%, rgba(0,155,58,.08), transparent 60%),
       radial-gradient(760px 520px at -8% 2%, rgba(255,146,1,.06), transparent 55%),
       var(--bg);
+    display:flex; align-items:center; justify-content:center; padding:24px;
   }
-  a{ color:inherit; text-decoration:none; }
-  ::selection{ background:rgba(0,155,58,.22); }
-  .wrap{ max-width:1160px; margin:0 auto; padding:0 22px; }
-
-  /* ===== Header / Nav ===== */
-  .site-header{
-    position:sticky; top:0; z-index:50;
-    background:color-mix(in srgb, var(--bg) 82%, transparent);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line);
-  }
-  .header-inner{ display:flex; align-items:center; gap:22px; height:var(--nav-h); }
-  .brand{ display:flex; align-items:center; gap:11px; flex-shrink:0; }
+  .wrap{ width:100%; max-width:520px; }
+  .brand{ display:flex; align-items:center; justify-content:center; gap:11px; margin-bottom:28px; }
   .brand .logo{
     width:38px; height:38px; border-radius:10px; background:var(--brand); color:#fff;
     display:flex; align-items:center; justify-content:center;
@@ -61,882 +59,66 @@
   .brand b{ font-family:'Archivo',sans-serif; font-weight:800; font-size:18px; color:var(--brand); letter-spacing:-.01em; line-height:1; }
   .brand b span{ display:block; color:var(--ink-soft); font-weight:600; font-size:9.5px; letter-spacing:.16em; margin-top:3px; }
 
-  .nav{ display:flex; align-items:center; gap:2px; flex:1; }
-  .nav a{
-    position:relative; font-size:13.5px; font-weight:500; color:var(--ink-soft);
-    padding:9px 13px; border-radius:9px; white-space:nowrap; transition:.14s ease;
-  }
-  .nav a:hover{ color:var(--ink); background:var(--bg-2); }
-  .nav a.active{ color:var(--brand-dark); background:var(--brand-tint); font-weight:600; }
-  .nav a .soon-dot{ width:5px; height:5px; border-radius:50%; background:var(--warm); display:inline-block; margin-left:6px; vertical-align:middle; }
-
-  .header-tools{ display:flex; align-items:center; gap:10px; flex-shrink:0; }
-  .clock{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft); text-align:right; line-height:1.4; }
-  .clock strong{ color:var(--ink); font-weight:500; }
-  .icon-btn{
-    appearance:none; border:1px solid var(--line-strong); background:var(--surface); color:var(--ink-soft);
-    width:36px; height:36px; border-radius:9px; cursor:pointer;
-    display:flex; align-items:center; justify-content:center; transition:.14s ease;
-  }
-  .icon-btn:hover{ color:var(--ink); border-color:var(--brand); }
-  .icon-btn:focus-visible{ outline:none; box-shadow:var(--focus); }
-  .icon-btn svg{ width:17px; height:17px; }
-  .icon-btn .moon{ display:none; }
-  :root[data-theme="dark"] .icon-btn .sun{ display:none; }
-  :root[data-theme="dark"] .icon-btn .moon{ display:block; }
-  #navToggle{ display:none; }
-
-  @media (max-width:900px){
-    .clock{ display:none; }
-    #navToggle{ display:flex; }
-    .nav{
-      position:absolute; left:0; right:0; top:var(--nav-h);
-      flex-direction:column; align-items:stretch; gap:2px;
-      background:var(--surface); border-bottom:1px solid var(--line-strong);
-      padding:10px 22px 16px; box-shadow:var(--shadow);
-      transform:translateY(-8px); opacity:0; pointer-events:none; transition:.16s ease;
-    }
-    .site-header.open .nav{ transform:translateY(0); opacity:1; pointer-events:auto; }
-    .nav a{ padding:12px 12px; }
-  }
-
-  /* ===== View transition ===== */
-  main{ padding:34px 0 46px; }
-  .view{ animation:fade .35s ease both; }
-  @keyframes fade{ from{ opacity:0; transform:translateY(8px); } }
-
-  /* ===== Hero (home) ===== */
-  .hero{
-    position:relative; overflow:hidden; border:1px solid var(--line-strong); border-radius:20px;
+  .card{
+    position:relative; overflow:hidden; text-align:center;
     background:linear-gradient(180deg, var(--surface), var(--bg-2));
-    padding:48px 40px 42px; box-shadow:var(--shadow);
+    border:1px solid var(--line-strong); border-radius:20px;
+    padding:44px 36px 38px; box-shadow:var(--shadow);
   }
-  .hero::before{
+  .card::before{
     content:""; position:absolute; inset:0;
     background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
-    background-size:36px 36px; opacity:.45;
-    -webkit-mask-image:radial-gradient(460px 300px at 84% 0%,#000,transparent 76%);
-    mask-image:radial-gradient(460px 300px at 84% 0%,#000,transparent 76%);
+    background-size:36px 36px; opacity:.4;
+    -webkit-mask-image:radial-gradient(420px 260px at 50% 0%,#000,transparent 76%);
+    mask-image:radial-gradient(420px 260px at 50% 0%,#000,transparent 76%);
   }
-  .eyebrow{
+  .ic{
+    position:relative; width:64px; height:64px; border-radius:16px; background:var(--warm-tint); color:var(--warm-dark);
+    display:flex; align-items:center; justify-content:center; margin:0 auto 20px;
+  }
+  .ic svg{ width:30px; height:30px; animation:spin 5s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .badge{
     position:relative; display:inline-flex; align-items:center; gap:7px;
     font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase;
-    color:var(--brand-dark); background:var(--brand-tint);
-    border:1px solid color-mix(in srgb,var(--brand) 22%,transparent);
-    padding:5px 11px; border-radius:999px;
+    color:var(--warm-dark); background:var(--warm-tint);
+    border:1px solid color-mix(in srgb,var(--warm) 30%,transparent);
+    padding:5px 12px; border-radius:999px; margin-bottom:16px;
   }
-  .pulse{ width:6px; height:6px; border-radius:50%; background:var(--brand); box-shadow:0 0 0 0 rgba(0,155,58,.5); animation:pulse 2.2s infinite; }
-  @keyframes pulse{ 70%{ box-shadow:0 0 0 8px rgba(0,155,58,0);} 100%{ box-shadow:0 0 0 0 rgba(0,155,58,0);} }
-  .hero h1{
-    position:relative; font-family:'Archivo',sans-serif; font-weight:800; letter-spacing:-.025em;
-    font-size:clamp(30px,5vw,50px); line-height:1.05; margin:18px 0 14px; max-width:17ch;
+  .badge .dot{ width:6px; height:6px; border-radius:50%; background:var(--warm); box-shadow:0 0 0 0 rgba(255,146,1,.5); animation:pulse 2.2s infinite; }
+  @keyframes pulse{ 70%{ box-shadow:0 0 0 8px rgba(255,146,1,0);} 100%{ box-shadow:0 0 0 0 rgba(255,146,1,0);} }
+  h1{
+    position:relative; font-family:'Archivo',sans-serif; font-weight:800; letter-spacing:-.02em;
+    font-size:clamp(24px,4vw,30px); margin:0 0 12px;
   }
-  .hero p{ position:relative; max-width:58ch; color:var(--ink-soft); font-size:15.5px; line-height:1.62; margin:0; }
-  .hero-cta{ position:relative; display:flex; flex-wrap:wrap; gap:12px; margin-top:26px; }
+  p{ position:relative; color:var(--ink-soft); font-size:14.5px; line-height:1.65; margin:0 0 8px; }
+  .meta{
+    position:relative; display:flex; align-items:center; justify-content:center; gap:8px;
+    margin-top:22px; padding-top:20px; border-top:1px solid var(--line);
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-faint);
+  }
+  .meta strong{ color:var(--ink-soft); font-weight:500; }
 
-  .btn{
-    appearance:none; border:none; cursor:pointer; font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px;
-    padding:11px 18px; border-radius:10px; display:inline-flex; align-items:center; gap:8px;
-    transition:background .15s ease, transform .12s ease, box-shadow .15s ease;
-  }
-  .btn svg{ width:14px; height:14px; }
-  .btn.primary{ background:var(--brand); color:#fff; }
-  .btn.primary:hover{ background:var(--brand-dark); transform:translateY(-1px); box-shadow:var(--shadow-hi); }
-  .btn.ghost{ background:var(--surface); color:var(--ink); border:1px solid var(--line-strong); }
-  .btn.ghost:hover{ border-color:var(--brand); color:var(--brand-dark); transform:translateY(-1px); }
-  .btn:focus-visible{ outline:none; box-shadow:var(--focus); }
-  .btn.loading{ pointer-events:none; opacity:.75; }
-  .btn.loading .ico-go{ animation:spin .7s linear infinite; }
-  @keyframes spin{ to{ transform:rotate(360deg); } }
-
-  .stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:22px; }
-  @media (max-width:760px){ .stats{ grid-template-columns:repeat(2,1fr); } }
-  .stat{
-    background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 16px;
-  }
-  .stat b{ display:block; font-family:'Archivo',sans-serif; font-weight:700; font-size:24px; letter-spacing:-.01em; }
-  .stat span{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-faint); letter-spacing:.04em; }
-
-  /* ===== Section head ===== */
-  .sec-head{ display:flex; align-items:baseline; gap:12px; margin:40px 2px 16px; }
-  .sec-head h2{ font-family:'Archivo',sans-serif; font-weight:700; font-size:15px; text-transform:uppercase; letter-spacing:.03em; margin:0; }
-  .sec-head .rule{ flex:1; height:1px; background:var(--line-strong); }
-  .sec-head em{ font-style:normal; font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-faint); }
-
-  /* ===== Module grid (home) ===== */
-  .mod-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-  @media (max-width:900px){ .mod-grid{ grid-template-columns:repeat(2,1fr); } }
-  @media (max-width:600px){ .mod-grid{ grid-template-columns:1fr; } }
-  .mod{
-    display:flex; flex-direction:column; gap:12px; background:var(--surface);
-    border:1px solid var(--line-strong); border-radius:var(--r); padding:20px;
-    box-shadow:var(--shadow); transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-  }
-  .mod.link{ cursor:pointer; }
-  .mod.link:hover{ transform:translateY(-3px); box-shadow:var(--shadow-hi); border-color:var(--brand); }
-  .mod.soon{ opacity:.82; }
-  .mod-ic{
-    width:44px; height:44px; border-radius:12px; background:var(--brand-tint); color:var(--brand-dark);
-    display:flex; align-items:center; justify-content:center;
-  }
-  .mod.soon .mod-ic{ background:var(--bg-2); color:var(--ink-faint); }
-  .mod-ic svg{ width:22px; height:22px; }
-  .mod h3{ font-family:'Archivo',sans-serif; font-weight:700; font-size:16.5px; margin:0; letter-spacing:-.01em; }
-  .mod p{ margin:0; color:var(--ink-soft); font-size:13px; line-height:1.55; flex:1; }
-  .mod .foot{ display:flex; align-items:center; justify-content:space-between; margin-top:4px; }
-  .tag{
-    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.05em; text-transform:uppercase;
-    padding:4px 9px; border-radius:999px;
-  }
-  .tag.on{ color:var(--brand-dark); background:var(--brand-tint); }
-  .tag.off{ color:var(--ink-faint); border:1px solid var(--line-strong); }
-  .mod .go{ font-size:12.5px; font-weight:600; color:var(--brand-dark); display:inline-flex; align-items:center; gap:5px; }
-  .mod .go svg{ width:13px; height:13px; }
-
-  /* ===== Dashboards page ===== */
-  .page-head{ margin-bottom:18px; }
-  .page-head h1{ font-family:'Archivo',sans-serif; font-weight:800; font-size:clamp(24px,3.4vw,32px); letter-spacing:-.02em; margin:0 0 6px; }
-  .page-head p{ margin:0; color:var(--ink-soft); font-size:14px; }
-
-  .filterbar{
-    display:flex; flex-wrap:wrap; gap:10px; align-items:center;
-    background:var(--surface); border:1px solid var(--line-strong); border-radius:var(--r);
-    padding:12px; box-shadow:var(--shadow); margin-bottom:14px;
-  }
-  .search{ position:relative; flex:1 1 240px; min-width:200px; }
-  .search svg{ position:absolute; left:12px; top:50%; transform:translateY(-50%); width:16px; height:16px; color:var(--ink-faint); }
-  .search input{
-    width:100%; font-family:'Inter',sans-serif; font-size:13.5px; color:var(--ink);
-    background:var(--bg-2); border:1px solid var(--line-strong); border-radius:9px; padding:10px 12px 10px 36px; transition:.14s;
-  }
-  .search input:focus{ outline:none; border-color:var(--brand); box-shadow:var(--focus); background:var(--surface); }
-  .fsel{ display:flex; flex-direction:column; gap:3px; }
-  .fsel label{ font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.05em; padding-left:2px; }
-  .fsel select{
-    font-family:'Inter',sans-serif; font-size:12.5px; color:var(--ink);
-    background:var(--bg-2); border:1px solid var(--line-strong); border-radius:8px; padding:8px 10px; cursor:pointer; transition:.14s;
-    min-width:118px;
-  }
-  .fsel select:focus{ outline:none; border-color:var(--brand); box-shadow:var(--focus); }
-  .fchecks{ display:flex; align-items:center; gap:14px; margin-left:auto; }
-  .chk{ display:inline-flex; align-items:center; gap:7px; font-size:12.5px; color:var(--ink-soft); cursor:pointer; user-select:none; }
-  .chk input{ accent-color:var(--brand); width:15px; height:15px; }
-  .viewtog{ display:flex; border:1px solid var(--line-strong); border-radius:8px; overflow:hidden; }
-  .viewtog button{
-    appearance:none; border:none; background:var(--bg-2); color:var(--ink-faint); cursor:pointer;
-    width:34px; height:34px; display:flex; align-items:center; justify-content:center; transition:.12s;
-  }
-  .viewtog button svg{ width:15px; height:15px; }
-  .viewtog button.on{ background:var(--brand); color:#fff; }
-
-  .chips{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:4px 2px 14px; }
-  .chips .lb{ font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.05em; }
-  .chip{
-    display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-size:12px; font-weight:500; color:var(--ink);
-    background:var(--surface); border:1px solid var(--line-strong); border-radius:999px; padding:6px 11px; transition:.14s;
-  }
-  .chip:hover{ border-color:var(--brand); color:var(--brand-dark); }
-  .chip svg{ width:11px; height:11px; color:var(--warm); }
-
-  .grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
-  @media (max-width:760px){ .grid{ grid-template-columns:1fr; } }
-  .grid.list{ grid-template-columns:1fr; }
-  .grid.list .card{ flex-direction:row; flex-wrap:wrap; align-items:flex-start; }
-  .grid.list .card .card-body{ flex:1 1 260px; }
-
-  .card{
-    position:relative; display:flex; flex-direction:column; gap:13px; background:var(--surface);
-    border:1px solid var(--line-strong); border-radius:var(--r); padding:19px; box-shadow:var(--shadow);
-    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-    animation:fade .4s ease both;
-  }
-  .card:hover{ transform:translateY(-3px); box-shadow:var(--shadow-hi); border-color:var(--brand); }
-  .card.hidden{ display:none; }
-  .card.pinned{ border-color:color-mix(in srgb,var(--warm) 45%,var(--line-strong)); }
-  .card-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
-  .card-ic{ width:42px; height:42px; border-radius:11px; background:var(--brand-tint); color:var(--brand-dark); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .card-ic svg{ width:21px; height:21px; }
-  .card-actions{ display:flex; align-items:center; gap:6px; }
-  .status{ display:inline-flex; align-items:center; gap:6px; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.02em; color:var(--brand-dark); background:var(--brand-tint); border-radius:999px; padding:4px 9px; }
-  .status .dot{ width:6px; height:6px; border-radius:50%; background:var(--brand); }
-  .status.dev{ color:var(--warm-dark); background:var(--warm-tint); }
-  .status.dev .dot{ background:var(--warm); }
-  .up-filters-toggle{
-    width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px;
-    background:var(--bg-2); border:1px solid var(--line-strong); border-radius:10px;
-    padding:10px 12px; font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase;
-    letter-spacing:.05em; color:var(--ink-soft); cursor:pointer; transition:.14s ease;
-  }
-  .up-filters-toggle:hover{ border-color:var(--brand); color:var(--brand-dark); }
-  .up-filters-toggle:focus-visible{ outline:none; box-shadow:var(--focus); }
-  .up-filters-toggle svg{ width:13px; height:13px; transition:transform .18s ease; }
-  .up-filters.open .up-filters-toggle{ border-radius:10px 10px 0 0; border-bottom-color:transparent; color:var(--brand-dark); }
-  .up-filters.open .up-filters-toggle svg{ transform:rotate(180deg); }
-  .up-links{
-    display:none; flex-direction:column; gap:8px; background:var(--bg-2); border:1px solid var(--line-strong);
-    border-top:none; border-radius:0 0 10px 10px; padding:11px; animation:fade .16s ease both;
-  }
-  .up-filters.open .up-links{ display:flex; }
-  .up-link-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
-  .up-link-row .lbl{ font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; }
-  .up-link-row .btn{ padding:7px 13px; font-size:12px; }
-  .up-link-row .btn svg{ width:11px; height:11px; }
-  .up-link-row .tag{ margin:0; }
-  .star{ appearance:none; border:none; background:transparent; cursor:pointer; color:var(--ink-faint); width:29px; height:29px; border-radius:8px; display:flex; align-items:center; justify-content:center; transition:.14s; }
-  .star:hover{ background:var(--bg-2); color:var(--warm); }
-  .star:focus-visible{ outline:none; box-shadow:var(--focus); }
-  .star svg{ width:16px; height:16px; }
-  .star.on{ color:var(--warm); }
-  .star.on svg{ fill:currentColor; }
-  .card h3{ font-family:'Archivo',sans-serif; font-weight:700; font-size:16.5px; margin:0; letter-spacing:-.01em; }
-  .card .kb{ font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.05em; display:block; margin-top:3px; }
-  .card .desc{ margin:0; color:var(--ink-soft); font-size:12.8px; line-height:1.55; min-height:54px; }
-  .card-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:auto; }
-  .last{ font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-faint); }
-  .card .btn{ padding:9px 14px; font-size:12.5px; }
-  .card .btn svg{ width:12px; height:12px; }
-
-  .empty{ display:none; text-align:center; padding:44px 20px; color:var(--ink-faint); font-size:13.5px; border:1px dashed var(--line-strong); border-radius:var(--r); }
-  .empty.show{ display:block; }
-
-  /* ===== Stub page ===== */
-  .stub{
-    text-align:center; max-width:520px; margin:30px auto; padding:44px 30px;
-    background:var(--surface); border:1px solid var(--line-strong); border-radius:20px; box-shadow:var(--shadow);
-  }
-  .stub-ic{ width:64px; height:64px; border-radius:16px; background:var(--warm-tint); color:var(--warm-dark); display:flex; align-items:center; justify-content:center; margin:0 auto 18px; }
-  .stub-ic svg{ width:30px; height:30px; }
-  .stub h1{ font-family:'Archivo',sans-serif; font-weight:800; font-size:24px; margin:0 0 8px; letter-spacing:-.01em; }
-  .stub .badge{ display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.08em; color:var(--warm-dark); background:var(--warm-tint); border-radius:999px; padding:5px 11px; margin-bottom:14px; }
-  .stub p{ color:var(--ink-soft); font-size:14px; line-height:1.6; margin:0 0 22px; }
-
-  /* ===== Lock modal ===== */
-  .lockbox-overlay{
-    position:fixed; inset:0; z-index:100; background:rgba(10,12,8,.5);
-    display:flex; align-items:center; justify-content:center; padding:20px;
-    animation:fade .18s ease both;
-  }
-  .lockbox{
-    width:340px; max-width:100%; background:var(--surface); border:1px solid var(--line-strong);
-    border-radius:18px; padding:26px; box-shadow:var(--shadow-hi); text-align:center;
-  }
-  .lockbox-ic{
-    width:48px; height:48px; border-radius:12px; background:var(--brand-tint); color:var(--brand-dark);
-    display:flex; align-items:center; justify-content:center; margin:0 auto 14px;
-  }
-  .lockbox-ic svg{ width:22px; height:22px; margin:0; }
-  .lockbox h3{ font-family:'Archivo',sans-serif; font-weight:700; font-size:17px; margin:0 0 6px; }
-  .lockbox p{ margin:0 0 16px; color:var(--ink-soft); font-size:13px; line-height:1.5; }
-  .lockbox input{
-    width:100%; font-family:'IBM Plex Mono',monospace; font-size:14px; color:var(--ink);
-    background:var(--bg-2); border:1px solid var(--line-strong); border-radius:9px;
-    padding:11px 12px; text-align:center; transition:.14s;
-  }
-  .lockbox input:focus{ outline:none; border-color:var(--brand); box-shadow:var(--focus); }
-  .lockbox-err{ display:none; color:#D0342C; font-size:12px; margin:8px 0 0; }
-  .lockbox-err.show{ display:block; }
-  .lockbox-actions{ display:flex; gap:10px; justify-content:center; margin-top:18px; }
-  .lockbox-actions .btn{ flex:1; justify-content:center; }
-
-  /* ===== Footer ===== */
-  footer{
-    border-top:1px solid var(--line); margin-top:10px;
-  }
-  .footer-inner{
-    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
-    padding:20px 0; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-faint);
-  }
-  .footer-inner nav{ display:flex; gap:16px; flex-wrap:wrap; }
-  .footer-inner nav a:hover{ color:var(--ink); }
-
-  @media (prefers-reduced-motion:reduce){
-    *{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
-    html{ scroll-behavior:auto; }
-  }
+  footer{ text-align:center; margin-top:22px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-faint); }
 </style>
 </head>
 <body>
-
-<header class="site-header" id="siteHeader">
-  <div class="wrap header-inner">
-    <a class="brand" href="#/inicio" aria-label="Inicio">
+  <div class="wrap">
+    <div class="brand">
       <span class="logo">R</span>
       <b>RANSA<span>GUATEMALA</span></b>
-    </a>
-    <nav class="nav" id="nav"></nav>
-    <div class="header-tools">
-      <div class="clock"><div>CD <strong>Villa Nueva</strong></div><div id="datetime">—</div></div>
-      <button class="icon-btn" id="themeBtn" title="Tema claro / oscuro" aria-label="Cambiar tema">
-        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
-      </button>
-      <button class="icon-btn" id="navToggle" aria-label="Menú">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      </button>
     </div>
+    <div class="card">
+      <div class="badge"><span class="dot"></span> En mantenimiento</div>
+      <div class="ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14.7 6.3a4 4 0 0 1-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 0 1 5.4-5.4l-3 3-2-2 3-3Z"/></svg>
+      </div>
+      <h1>El portal está en mantenimiento</h1>
+      <p>Estamos realizando mejoras en el Centro de control de operaciones del CD Villa Nueva.</p>
+      <p>El acceso a dashboards, herramientas y demás módulos estará disponible nuevamente en breve.</p>
+      <div class="meta">CD <strong>Villa Nueva</strong> · Uso interno</div>
+    </div>
+    <footer>Developed by the Slotting Guatemala Department</footer>
   </div>
-</header>
-
-<main class="wrap"><div id="view"></div></main>
-
-<footer>
-  <div class="wrap footer-inner">
-    <span>Ransa Guatemala © 2026 · Uso interno</span>
-    <nav id="footNav"></nav>
-    <span>Developed by the Slotting Guatemala Department</span>
-  </div>
-</footer>
-
-<script>
-(function(){
-  "use strict";
-  function get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
-  function set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
-
-  /* ---------- Icons ---------- */
-  var IC = {
-    home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg>',
-    chart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V10M10 19V5M16 19v-6M22 19H2"/></svg>',
-    report:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg>',
-    ban:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><path d="m6.5 6.5 11 11"/></svg>',
-    layout:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 21V9"/></svg>',
-    tool:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14.7 6.3a4 4 0 0 1-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 0 1 5.4-5.4l-3 3-2-2 3-3Z"/></svg>',
-    cube:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8.5 12 4l9 4.5-9 4.5-9-4.5Z"/><path d="M3 8.5V16l9 4.5 9-4.5V8.5"/><path d="M12 13v7.5"/></svg>',
-    grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="3.5" width="7" height="7"/><rect x="13.5" y="3.5" width="7" height="7"/><rect x="3.5" y="13.5" width="7" height="7"/><rect x="13.5" y="13.5" width="7" height="7"/></svg>',
-    star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m12 3 2.7 5.5 6 .9-4.3 4.2 1 6-5.4-2.8L6.3 22l1-6L3 11.8l6-.9L12 3Z"/></svg>',
-    go:'<svg class="ico-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M8 7h9v9"/></svg>',
-    arrow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
-    search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>',
-    rows:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>',
-    cols:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="8" height="16"/><rect x="13" y="4" width="8" height="16"/></svg>',
-    lock:'<svg class="ico-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:12px;height:12px;margin-left:5px;vertical-align:middle"><rect x="4.5" y="10.5" width="15" height="9.5" rx="2"/><path d="M7.5 10.5V7.5a4.5 4.5 0 0 1 9 0v3"/></svg>',
-    chevron:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>',
-    inventory:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="8" height="8" rx="1"/><rect x="13" y="4" width="8" height="8" rx="1"/><rect x="8" y="13" width="8" height="7" rx="1"/></svg>',
-    support:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="2.5" y="13" width="5" height="6" rx="2"/><rect x="16.5" y="13" width="5" height="6" rx="2"/><path d="M20 19a4 4 0 0 1-4 4h-2"/></svg>'
-  };
-
-  /* ---------- Config ---------- */
-  var NAV = [
-    { id:'inicio',      label:'Inicio' },
-    { id:'dashboards',  label:'Dashboards' },
-    { id:'reportes',    label:'Reportes',       soon:true },
-    { id:'anulaciones', label:'Anulaciones' },
-    { id:'inventarios', label:'Inventarios',    soon:true },
-    { id:'layout',      label:'Layout General', url:'https://bgarciaga.github.io/Layout.github.io/' },
-    { id:'herramientas',label:'Herramientas' },
-    { id:'soporte',     label:'Soporte',        soon:true }
-  ];
-
-  var MODULES = [
-    { id:'dashboards',  icon:IC.chart,  title:'Dashboards Operativos', status:'on',
-      desc:'Capacidad y ocupación del CD Villa Nueva en tiempo real, con vistas por zona y por rack.' },
-    { id:'reportes',    icon:IC.report, title:'Reportes', status:'off',
-      desc:'Informes periódicos de operación: productividad, movimientos y cumplimiento de KPIs.' },
-    { id:'anulaciones', icon:IC.ban,    title:'Anulaciones', status:'on', forceLabel:true,
-      desc:'Registro y control de anulaciones de operaciones, con motivo, responsable y trazabilidad.' },
-    { id:'inventarios', icon:IC.inventory, title:'Inventarios', status:'off',
-      desc:'Control y seguimiento de inventarios del CD: existencias, ajustes y conteos cíclicos.' },
-    { id:'layout',      icon:IC.layout, title:'Layout General', status:'on',
-      url:'https://bgarciaga.github.io/Layout.github.io/',
-      desc:'Plano general del centro de distribución: zonificación, pasillos y distribución de familias.' },
-    { id:'herramientas',icon:IC.tool,   title:'Herramientas', status:'on',
-      desc:'Utilidades internas del equipo de slotting: calculadoras, conversores y plantillas.' },
-    { id:'soporte',     icon:IC.support,   title:'Soporte', status:'off',
-      desc:'Canal de soporte para incidencias y solicitudes relacionadas con el portal y la operación.' }
-  ];
-
-  var DASHBOARDS = [
-    {
-      id:'capacidad', title:'Capacidad Total CD', area:'Almacenamiento', icon:IC.cube,
-      url:'https://bgarciaga.github.io/Ransa-Capacidad-total.github.io/',
-      kw:'capacidad almacenamiento zona metros cubicos saturacion proyeccion espacio remanente',
-      desc:'Gestión de capacidad de almacenamiento del CD: espacio disponible, utilizado y proyecciones por zona.'
-    },
-    {
-      id:'ocupacion', title:'Ocupación CD Villa Nueva', area:'Posiciones', icon:IC.grid,
-      url:'https://bgarciaga.github.io/Ocupaci-n-CD-Villa-Nueva-automate.github.io/',
-      kw:'ocupacion posiciones racks mapa ubicaciones niveles disponibilidad tiempo real automatizado',
-      desc:'Dashboard automatizado de ocupación de posiciones y racks, con mapa de ubicaciones en tiempo real.'
-    }
-  ];
-
-  var TOOLS = [
-    {
-      id:'racks-pasillo', title:'Configuración de Racks por Pasillo', area:'Configuración', icon:IC.tool,
-      url:'https://bgarciaga.github.io/Configuraci-n-de-racks-por-pasillo.github.io/',
-      kw:'configuracion racks pasillo niveles familias parametros',
-      desc:'Configuración de la distribución de racks por pasillo del CD: niveles, posiciones y parámetros por familia.'
-    }
-  ];
-
-  var CATALOGS = {
-    dashboards:{ title:'Dashboards Operativos', subtitle:'Selecciona un tablero, ajusta los filtros y ábrelo en una nueva pestaña.', items:DASHBOARDS },
-    herramientas:{ title:'Herramientas', subtitle:'Selecciona una herramienta, ajusta los filtros y ábrela en una nueva pestaña.', items:TOOLS }
-  };
-
-  /* Modulos con clave de acceso. La clave vive en el codigo fuente:
-     protege de un vistazo casual, no de alguien que inspeccione el HTML. */
-  var LOCKS = { herramientas:'Slotting2026$', inventarios:'INV2026$' };
-  var ALERT_EMAIL = 'slottingguatemala@gmail.com';
-  var MAX_ATTEMPTS = 3;
-
-  /* Tarjetas de "proximo lanzamiento" para modulos aun en desarrollo.
-     due: fecha objetivo fija (cuenta regresiva de 15 dias desde su creacion). */
-  var UPCOMING = {
-    anulaciones: [
-      {
-        id:'incidencias', title:'Incidencias', area:'Anulaciones', icon:IC.ban,
-        desc:'Análisis de anulaciones por operador: Picking, Montacarguistas, Monitores.',
-        due:'2026-09-25T00:00:00',
-        links:[
-          { label:'Dashboard', url:null },
-          { label:'Data', url:'http://10.130.32.134/reports/report/Inventario/Monitor%20incidencias' }
-        ]
-      },
-      {
-        id:'anulaciones-fillrate', title:'Anulaciones Fill Rate', area:'Anulaciones', icon:IC.ban,
-        desc:'Motivos de anulaciones, cantidad de pedidos cancelados e incumplimiento del Fill Rate.',
-        due:'2026-09-30T00:00:00',
-        links:[
-          { label:'Dashboard', url:null },
-          { label:'Data', url:'http://10.130.32.225:8085/ReportesGT/report/Slotting/Fillrate%20diario%20Fechas' }
-        ]
-      }
-    ]
-  };
-  function countdownText(dueIso){
-    var days=Math.ceil((new Date(dueIso).getTime()-Date.now())/86400000);
-    if(days<=0) return 'Disponible en cualquier momento';
-    return days+(days===1?' dia restante':' dias restantes');
-  }
-
-  /* Filtros de la pantalla de catalogos. Algunos son marcadores de posicion
-     (aun sin logica) para cuando el equipo defina los criterios. */
-  var FILTERS = [
-    { id:'estado',  label:'Estado',  opts:['Todos','Activo','En desarrollo'] },
-    { id:'orden',   label:'Orden',   opts:['Recientes','A – Z','Fijados primero'] },
-    { id:'zona',    label:'Zona',    opts:['Todas','Zona A','Zona B','Zona C','Zona D'], placeholder:true },
-    { id:'periodo', label:'Periodo', opts:['Hoy','Esta semana','Este mes','Trimestre'], placeholder:true },
-    { id:'turno',   label:'Turno',   opts:['Todos','Matutino','Vespertino','Nocturno'], placeholder:true }
-  ];
-
-  var K = {
-    theme:'ransa:theme', fav:'ransa:favs', dview:'ransa:dview',
-    last:function(id){ return 'ransa:last:'+id; }
-  };
-
-  /* ---------- Theme ---------- */
-  function applyTheme(t){
-    if(t==='dark'||t==='light') document.documentElement.setAttribute('data-theme',t);
-    else document.documentElement.removeAttribute('data-theme');
-  }
-  applyTheme(get(K.theme));
-  document.getElementById('themeBtn').addEventListener('click', function(){
-    var cur=document.documentElement.getAttribute('data-theme'), next;
-    if(!cur) next = matchMedia('(prefers-color-scheme: dark)').matches ? 'light' : 'dark';
-    else next = cur==='dark' ? 'light' : 'dark';
-    applyTheme(next); set(K.theme,next);
-  });
-
-  /* ---------- Clock ---------- */
-  function tick(){
-    var n=new Date();
-    var f=n.toLocaleDateString('es-GT',{day:'2-digit',month:'2-digit',year:'numeric'});
-    var h=n.toLocaleTimeString('es-GT',{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('datetime').innerHTML='<strong>'+f+' · '+h+'</strong>';
-  }
-  tick(); setInterval(tick,20000);
-
-  /* ---------- Nav ---------- */
-  var header=document.getElementById('siteHeader');
-  document.getElementById('navToggle').addEventListener('click', function(){ header.classList.toggle('open'); });
-
-  function buildNav(active){
-    var html = NAV.map(function(n){
-      if(n.url){
-        return '<a href="'+n.url+'" target="_blank" rel="noopener" data-id="'+n.id+'">'+n.label+'</a>';
-      }
-      return '<a href="#/'+n.id+'" data-id="'+n.id+'" class="'+(n.id===active?'active':'')+'">'+
-        n.label + (n.soon?'<span class="soon-dot" title="Próximamente"></span>':'') + (LOCKS[n.id]?IC.lock:'') + '</a>';
-    }).join('');
-    document.getElementById('nav').innerHTML = html;
-    document.getElementById('footNav').innerHTML = NAV.map(function(n){
-      if(n.url) return '<a href="'+n.url+'" target="_blank" rel="noopener">'+n.label+'</a>';
-      return '<a href="#/'+n.id+'" data-id="'+n.id+'">'+n.label+'</a>';
-    }).join('');
-    function guardNavClick(a){
-      a.addEventListener('click', function(e){
-        header.classList.remove('open');
-        var id=a.dataset.id;
-        if(id && LOCKS[id]){
-          e.preventDefault();
-          requestUnlock(id, function(){ unlockedModule=id; location.hash='#/'+id; });
-        }
-      });
-    }
-    Array.prototype.forEach.call(document.querySelectorAll('#nav a'), guardNavClick);
-    Array.prototype.forEach.call(document.querySelectorAll('#footNav a[data-id]'), guardNavClick);
-  }
-
-  /* ---------- Locks ----------
-     unlockedModule solo vive en memoria: se limpia al salir del modulo,
-     asi que cada nueva entrada vuelve a pedir la clave. */
-  var unlockedModule=null;
-  var lockOverlay=null;
-  var failAttempts={};
-
-  /* No hay backend: no se puede enviar un correo automatico de verdad desde
-     HTML estatico. Esto abre un borrador de correo (mailto) precargado hacia
-     ALERT_EMAIL; el usuario que tenga la pestaña abierta debe darle "Enviar"
-     en su cliente de correo para que la alerta realmente salga. */
-  function sendAlertEmail(id){
-    var mod=MODULES.filter(function(m){ return m.id===id; })[0];
-    var name=mod?mod.title:id;
-    var when=new Date().toLocaleString('es-GT');
-    var subject='Alerta de seguridad - Portal Ransa ('+name+')';
-    var body='Se registraron '+MAX_ATTEMPTS+' intentos fallidos de clave en el modulo "'+name+'".\n\nFecha: '+when+'\nCD: Villa Nueva';
-    window.open('mailto:'+ALERT_EMAIL+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body), '_blank');
-  }
-
-  function closeLock(){ if(lockOverlay){ lockOverlay.remove(); lockOverlay=null; } }
-  function requestUnlock(id, onSuccess){
-    closeLock();
-    failAttempts[id]=failAttempts[id]||0;
-    lockOverlay=document.createElement('div');
-    lockOverlay.className='lockbox-overlay';
-    lockOverlay.innerHTML =
-      '<div class="lockbox">' +
-        '<div class="lockbox-ic">'+IC.lock+'</div>' +
-        '<h3>Acceso restringido</h3>' +
-        '<p>Este modulo requiere una clave para continuar.</p>' +
-        '<input type="password" id="lockInput" placeholder="Clave de acceso" autocomplete="off">' +
-        '<p class="lockbox-err" id="lockErr">Clave incorrecta.</p>' +
-        '<div class="lockbox-actions">' +
-          '<button class="btn ghost" id="lockCancel">Cancelar</button>' +
-          '<button class="btn primary" id="lockOk">Entrar</button>' +
-        '</div>' +
-      '</div>';
-    document.body.appendChild(lockOverlay);
-    var input=document.getElementById('lockInput'), err=document.getElementById('lockErr');
-    input.focus();
-    function tryUnlock(){
-      if(input.value===LOCKS[id]){
-        failAttempts[id]=0;
-        closeLock(); onSuccess();
-        return;
-      }
-      failAttempts[id]++;
-      if(failAttempts[id]>=MAX_ATTEMPTS){
-        sendAlertEmail(id);
-        err.textContent='Clave incorrecta. Se genero una alerta por '+MAX_ATTEMPTS+' intentos fallidos.';
-        failAttempts[id]=0;
-      } else {
-        err.textContent='Clave incorrecta.';
-      }
-      err.classList.add('show'); input.value=''; input.focus();
-    }
-    document.getElementById('lockOk').addEventListener('click', tryUnlock);
-    document.getElementById('lockCancel').addEventListener('click', closeLock);
-    input.addEventListener('keydown', function(e){ if(e.key==='Enter') tryUnlock(); });
-    lockOverlay.addEventListener('click', function(e){ if(e.target===lockOverlay) closeLock(); });
-  }
-
-  /* ---------- Favorites ---------- */
-  function favs(){ try{ return JSON.parse(get(K.fav)||'[]'); }catch(e){ return []; } }
-  function isFav(id){ return favs().indexOf(id)!==-1; }
-  function toggleFav(id){
-    var l=favs(), i=l.indexOf(id);
-    if(i===-1) l.push(id); else l.splice(i,1);
-    set(K.fav, JSON.stringify(l));
-    route(); // re-render current view
-  }
-
-  function relTime(iso){
-    if(!iso) return 'Sin accesos recientes';
-    var m=Math.round((Date.now()-new Date(iso).getTime())/60000);
-    if(m<1) return 'Último acceso: hace un momento';
-    if(m<60) return 'Último acceso: hace '+m+' min';
-    var h=Math.round(m/60); if(h<24) return 'Último acceso: hace '+h+' h';
-    return 'Último acceso: hace '+Math.round(h/24)+' d';
-  }
-
-  /* ---------- Views ---------- */
-  var viewEl=document.getElementById('view');
-
-  function goDash(){ location.hash='#/dashboards'; }
-
-  function renderHome(){
-    var active=MODULES.filter(function(m){return m.status==='on' && !m.forceLabel;}).length;
-    var soon=MODULES.length-active;
-    viewEl.innerHTML =
-      '<section class="view">' +
-        '<div class="hero">' +
-          '<span class="eyebrow"><span class="pulse"></span> Operación en línea</span>' +
-          '<h1>Centro de control de operaciones</h1>' +
-          '<p>Acceso único a los tableros, reportes y herramientas del centro de distribución de Villa Nueva. Todo el estado del CD en un solo lugar, siempre actualizado.</p>' +
-          '<div class="hero-cta">' +
-            '<button class="btn primary" id="ctaDash">Explorar dashboards '+IC.arrow+'</button>' +
-            '<a class="btn ghost" href="#modulos">Ver módulos</a>' +
-          '</div>' +
-          '<div class="stats">' +
-            '<div class="stat"><b>'+active+'</b><span>MÓDULOS ACTIVOS</span></div>' +
-            '<div class="stat"><b>'+soon+'</b><span>EN DESARROLLO</span></div>' +
-            '<div class="stat"><b>'+DASHBOARDS.length+'</b><span>DASHBOARDS</span></div>' +
-            '<div class="stat"><b>Villa Nueva</b><span>CENTRO DE DISTRIBUCIÓN</span></div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="sec-head" id="modulos"><h2>Módulos del portal</h2><span class="rule"></span><em>'+MODULES.length+' módulos</em></div>' +
-        '<div class="mod-grid">' +
-          MODULES.map(function(m){
-            var on=m.status==='on';
-            var showActive=on && !m.forceLabel;
-            return '<div class="mod '+(on?'link':'soon')+'" data-id="'+m.id+'">' +
-              '<div class="mod-ic">'+m.icon+'</div>' +
-              '<h3>'+m.title+(LOCKS[m.id]?IC.lock:'')+'</h3>' +
-              '<p>'+m.desc+'</p>' +
-              '<div class="foot">' +
-                (showActive ? '<span class="tag on">Activo</span><span class="go">Entrar '+IC.go+'</span>'
-                    : '<span class="tag off">Próximamente</span>') +
-              '</div>' +
-            '</div>';
-          }).join('') +
-        '</div>' +
-      '</section>';
-
-    document.getElementById('ctaDash').addEventListener('click', goDash);
-    Array.prototype.forEach.call(viewEl.querySelectorAll('.mod.link'), function(el){
-      el.addEventListener('click', function(){
-        var m=MODULES.filter(function(x){ return x.id===el.dataset.id; })[0];
-        if(!m) return;
-        var proceed=function(){
-          if(m.url) window.open(m.url,'_blank','noopener');
-          else location.hash='#/'+m.id;
-        };
-        if(LOCKS[m.id]) requestUnlock(m.id, function(){ unlockedModule=m.id; proceed(); });
-        else proceed();
-      });
-    });
-  }
-
-  function renderCatalog(catKey){
-    var cat=CATALOGS[catKey];
-    var items=cat.items;
-    var areas=['Todas'];
-    items.forEach(function(d){ if(areas.indexOf(d.area)===-1) areas.push(d.area); });
-    var savedView = get(K.dview)==='list' ? 'list' : 'grid';
-    viewEl.innerHTML =
-      '<section class="view">' +
-        '<div class="page-head">' +
-          '<h1>'+cat.title+'</h1>' +
-          '<p>'+cat.subtitle+'</p>' +
-        '</div>' +
-        '<div class="filterbar">' +
-          '<div class="search">'+IC.search+'<input type="text" id="q" placeholder="Buscar…" autocomplete="off" aria-label="Buscar"></div>' +
-          '<div class="fsel"><label for="f-area">Area</label><select id="f-area" data-f="area">'+
-            areas.map(function(o){ return '<option>'+o+'</option>'; }).join('')+
-          '</select></div>' +
-          FILTERS.map(function(f){
-            return '<div class="fsel"><label for="f-'+f.id+'">'+f.label+(f.placeholder?' *':'')+'</label>'+
-              '<select id="f-'+f.id+'" data-f="'+f.id+'">'+
-              f.opts.map(function(o){ return '<option>'+o+'</option>'; }).join('')+
-              '</select></div>';
-          }).join('') +
-          '<div class="fchecks">' +
-            '<label class="chk"><input type="checkbox" id="onlyFav"> Solo fijados</label>' +
-            '<div class="viewtog">' +
-              '<button id="vGrid" class="'+(savedView==='grid'?'on':'')+'" title="Cuadricula">'+IC.cols+'</button>' +
-              '<button id="vList" class="'+(savedView==='list'?'on':'')+'" title="Lista">'+IC.rows+'</button>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="chips" id="chips" hidden><span class="lb">Fijados</span></div>' +
-        '<div class="sec-head"><h2>Listado</h2><span class="rule"></span><em id="count">—</em></div>' +
-        '<div class="grid '+(savedView==='list'?'list':'')+'" id="grid"></div>' +
-        '<div class="empty" id="empty">Sin resultados. Ajusta la busqueda o los filtros.</div>' +
-        '<p style="font-family:\'IBM Plex Mono\',monospace;font-size:10.5px;color:var(--ink-faint);margin-top:14px">* Filtros en configuracion, se activaran cuando el equipo defina los criterios.</p>' +
-      '</section>';
-
-    var grid=document.getElementById('grid'), emptyEl=document.getElementById('empty'),
-        countEl=document.getElementById('count'), qEl=document.getElementById('q'),
-        chipsEl=document.getElementById('chips'), onlyFav=document.getElementById('onlyFav');
-
-    function openItem(d, btn){
-      set(K.last(d.id), new Date().toISOString());
-      btn.classList.add('loading'); btn.querySelector('.lbl').textContent='Abriendo…';
-      setTimeout(function(){
-        window.open(d.url,'_blank','noopener');
-        route();
-      }, 420);
-    }
-
-    function cardFor(d){
-      var pinned=isFav(d.id);
-      var c=document.createElement('div');
-      c.className='card'+(pinned?' pinned':''); c.dataset.id=d.id;
-      c.dataset.search=(d.title+' '+d.area+' '+d.kw).toLowerCase();
-      c.dataset.area=d.area;
-      c.innerHTML =
-        '<div class="card-top">' +
-          '<div class="card-ic">'+d.icon+'</div>' +
-          '<div class="card-actions">' +
-            '<span class="status"><span class="dot"></span>Activo</span>' +
-            '<button class="star '+(pinned?'on':'')+'" aria-label="Fijar '+d.title+'">'+IC.star+'</button>' +
-          '</div>' +
-        '</div>' +
-        '<div class="card-body"><h3>'+d.title+'</h3><span class="kb">'+d.area+'</span>' +
-          '<p class="desc" style="margin-top:8px">'+d.desc+'</p></div>' +
-        '<div class="card-foot"><span class="last">'+relTime(get(K.last(d.id)))+'</span>' +
-          '<button class="btn primary js-open"><span class="lbl">Abrir</span>'+IC.go+'</button></div>';
-      c.querySelector('.star').addEventListener('click', function(){ toggleFav(d.id); });
-      c.querySelector('.js-open').addEventListener('click', function(){ openItem(d, this); });
-      return c;
-    }
-
-    function draw(){
-      var fl=favs();
-      var orden=document.getElementById('f-orden').value;
-      var list=items.slice();
-      if(orden==='A – Z') list.sort(function(a,b){ return a.title.localeCompare(b.title); });
-      else list.sort(function(a,b){
-        var fa=fl.indexOf(a.id)!==-1, fb=fl.indexOf(b.id)!==-1;
-        if(orden==='Fijados primero' && fa!==fb) return fa?-1:1;
-        var la=get(K.last(a.id))||'', lb=get(K.last(b.id))||'';
-        return lb.localeCompare(la);
-      });
-      if(orden!=='A – Z'){
-        list.sort(function(a,b){ var fa=fl.indexOf(a.id)!==-1, fb=fl.indexOf(b.id)!==-1; return fa===fb?0:(fa?-1:1); });
-      }
-
-      grid.innerHTML='';
-      list.forEach(function(d,i){ var c=cardFor(d); c.style.animationDelay=(i*55)+'ms'; grid.appendChild(c); });
-
-      var favCards=list.filter(function(d){ return fl.indexOf(d.id)!==-1; });
-      if(favCards.length){
-        chipsEl.hidden=false;
-        chipsEl.innerHTML='<span class="lb">Fijados</span>'+favCards.map(function(d){
-          return '<button class="chip" data-goto="'+d.id+'">'+IC.star.replace('fill="none"','fill="currentColor"')+d.title+'</button>';
-        }).join('');
-        Array.prototype.forEach.call(chipsEl.querySelectorAll('.chip'), function(ch){
-          ch.addEventListener('click', function(){
-            var t=grid.querySelector('.card[data-id="'+ch.dataset.goto+'"]');
-            if(t){ t.scrollIntoView({block:'center'}); t.style.borderColor='var(--brand)'; setTimeout(function(){ t.style.borderColor=''; },900); }
-          });
-        });
-      } else { chipsEl.hidden=true; chipsEl.innerHTML='<span class="lb">Fijados</span>'; }
-
-      applyFilter();
-    }
-
-    function applyFilter(){
-      var q=qEl.value.trim().toLowerCase();
-      var area=document.getElementById('f-area').value;
-      var onlyF=onlyFav.checked;
-      var shown=0;
-      Array.prototype.forEach.call(grid.querySelectorAll('.card'), function(c){
-        var ok = (!q || c.dataset.search.indexOf(q)!==-1) &&
-                 (area==='Todas' || c.dataset.area===area) &&
-                 (!onlyF || c.classList.contains('pinned'));
-        c.classList.toggle('hidden', !ok);
-        if(ok) shown++;
-      });
-      emptyEl.classList.toggle('show', shown===0);
-      countEl.textContent = shown+(shown===1?' resultado':' resultados');
-    }
-
-    qEl.addEventListener('input', applyFilter);
-    document.getElementById('f-area').addEventListener('change', applyFilter);
-    document.getElementById('f-orden').addEventListener('change', draw);
-    onlyFav.addEventListener('change', applyFilter);
-    document.getElementById('vGrid').addEventListener('click', function(){
-      grid.classList.remove('list'); this.classList.add('on'); document.getElementById('vList').classList.remove('on'); set(K.dview,'grid');
-    });
-    document.getElementById('vList').addEventListener('click', function(){
-      grid.classList.add('list'); this.classList.add('on'); document.getElementById('vGrid').classList.remove('on'); set(K.dview,'list');
-    });
-
-    document.addEventListener('keydown', function h(e){
-      if(!document.body.contains(qEl)){ document.removeEventListener('keydown',h); return; }
-      if(e.key==='/' && document.activeElement!==qEl){ e.preventDefault(); qEl.focus(); }
-      else if(e.key==='Escape' && document.activeElement===qEl){ qEl.value=''; applyFilter(); qEl.blur(); }
-    });
-
-    draw();
-  }
-
-  function renderStub(mod){
-    var upList=UPCOMING[mod.id];
-    var upHtml='';
-    if(upList && upList.length){
-      upHtml =
-        '<div class="sec-head"><h2>Próximo lanzamiento</h2><span class="rule"></span></div>' +
-        '<div class="grid">' +
-          upList.map(function(up){
-            return '<div class="card">' +
-              '<div class="card-top">' +
-                '<div class="card-ic">'+up.icon+'</div>' +
-                '<span class="status dev"><span class="dot"></span>En desarrollo</span>' +
-              '</div>' +
-              '<div class="card-body"><h3>'+up.title+'</h3><span class="kb">'+up.area+'</span>' +
-                '<p class="desc" style="margin-top:8px">'+up.desc+'</p></div>' +
-              '<div class="up-filters">' +
-                '<button type="button" class="up-filters-toggle">Filtros'+IC.chevron+'</button>' +
-                '<div class="up-links">' +
-                  (up.links||[]).map(function(l){
-                    return '<div class="up-link-row"><span class="lbl">'+l.label+'</span>' +
-                      (l.url ? '<a class="btn primary" href="'+l.url+'" target="_blank" rel="noopener">Abrir'+IC.go+'</a>'
-                             : '<span class="tag off">Próximamente</span>') +
-                    '</div>';
-                  }).join('') +
-                '</div>' +
-              '</div>' +
-              '<div class="card-foot"><span class="last">'+countdownText(up.due)+'</span></div>' +
-            '</div>';
-          }).join('') +
-        '</div>';
-    }
-    viewEl.innerHTML =
-      '<section class="view"><div class="stub">' +
-        '<div class="stub-ic">'+mod.icon+'</div>' +
-        '<div class="badge">Próximamente</div>' +
-        '<h1>'+mod.title+'</h1>' +
-        '<p>'+mod.desc+'</p>' +
-        '<p>El equipo de <strong>Slotting Guatemala</strong> está desarrollando esta sección. Estará disponible en una próxima actualización del portal.</p>' +
-        '<a class="btn primary" href="#/inicio">Volver al inicio '+IC.arrow+'</a>' +
-      '</div>' + upHtml + '</section>';
-
-    Array.prototype.forEach.call(viewEl.querySelectorAll('.up-filters-toggle'), function(btn){
-      btn.addEventListener('click', function(){ btn.closest('.up-filters').classList.toggle('open'); });
-    });
-  }
-
-  /* ---------- Router ---------- */
-  function route(){
-    var id=(location.hash.replace(/^#\/?/,'').split('?')[0]) || 'inicio';
-    if(!NAV.some(function(n){ return n.id===id; })) id='inicio';
-    if(LOCKS[id]){
-      if(unlockedModule!==id){
-        if(location.hash!=='#/inicio') location.hash='#/inicio';
-        requestUnlock(id, function(){ unlockedModule=id; location.hash='#/'+id; });
-        return;
-      }
-    } else {
-      unlockedModule=null;
-    }
-    buildNav(id);
-    window.scrollTo({ top:0, behavior:'auto' });
-    if(id==='inicio') renderHome();
-    else if(id==='dashboards') renderCatalog('dashboards');
-    else if(id==='herramientas') renderCatalog('herramientas');
-    else if(id==='layout'){
-      var m=MODULES.filter(function(x){ return x.id==='layout'; })[0];
-      if(m && m.url){ window.open(m.url,'_blank','noopener'); location.hash='#/inicio'; return; }
-      renderStub(m || {icon:IC.layout,title:'Layout General',desc:''});
-    }
-    else renderStub(MODULES.filter(function(m){ return m.id===id; })[0] || {icon:IC.tool,title:id,desc:''});
-  }
-  window.addEventListener('hashchange', route);
-  route();
-})();
-</script>
 </body>
 </html>
