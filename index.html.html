@@ -561,7 +561,7 @@
     }).join('');
     document.getElementById('nav').innerHTML = html;
     document.getElementById('footNav').innerHTML = NAV.map(function(n){
-      if(n.url) return '<a href="'+n.url+'" target="_blank" rel="noopener">'+n.label+'</a>';
+      if(n.url) return '<a href="'+n.url+'" target="_blank" rel="noopener" data-id="'+n.id+'">'+n.label+'</a>';
       return '<a href="#/'+n.id+'" data-id="'+n.id+'">'+n.label+'</a>';
     }).join('');
     function guardNavClick(a){
@@ -571,6 +571,8 @@
         if(id && LOCKS[id]){
           e.preventDefault();
           requestUnlock(id, function(){ unlockedModule=id; location.hash='#/'+id; });
+        } else if(id==='layout'){
+          setTimeout(function(){ window.close(); }, 50);
         }
       });
     }
@@ -665,6 +667,15 @@
 
   function goDash(){ location.hash='#/dashboards'; }
 
+  /* Al abrir Layout General se cierra esta pestaña del portal. Los navegadores
+     solo permiten cerrar (window.close) una pestaña que ellos mismos abrieron
+     por script; si el portal se abrio escribiendo la URL o desde un marcador,
+     el cierre puede no ejecutarse y la pestaña se queda abierta igual. */
+  function openModuleUrl(m){
+    window.open(m.url,'_blank','noopener');
+    if(m.id==='layout'){ setTimeout(function(){ window.close(); }, 50); }
+  }
+
   function renderHome(){
     var active=MODULES.filter(function(m){return m.status==='on' && !m.forceLabel;}).length;
     var soon=MODULES.length-active;
@@ -709,7 +720,7 @@
         var m=MODULES.filter(function(x){ return x.id===el.dataset.id; })[0];
         if(!m) return;
         var proceed=function(){
-          if(m.url) window.open(m.url,'_blank','noopener');
+          if(m.url) openModuleUrl(m);
           else location.hash='#/'+m.id;
         };
         if(LOCKS[m.id]) requestUnlock(m.id, function(){ unlockedModule=m.id; proceed(); });
@@ -929,7 +940,7 @@
     else if(id==='herramientas') renderCatalog('herramientas');
     else if(id==='layout'){
       var m=MODULES.filter(function(x){ return x.id==='layout'; })[0];
-      if(m && m.url){ window.open(m.url,'_blank','noopener'); location.hash='#/inicio'; return; }
+      if(m && m.url){ openModuleUrl(m); location.hash='#/inicio'; return; }
       renderStub(m || {icon:IC.layout,title:'Layout General',desc:''});
     }
     else renderStub(MODULES.filter(function(m){ return m.id===id; })[0] || {icon:IC.tool,title:id,desc:''});
