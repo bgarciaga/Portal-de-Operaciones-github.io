@@ -259,6 +259,8 @@
   .card-actions{ display:flex; align-items:center; gap:6px; }
   .status{ display:inline-flex; align-items:center; gap:6px; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.02em; color:var(--brand-dark); background:var(--brand-tint); border-radius:999px; padding:4px 9px; }
   .status .dot{ width:6px; height:6px; border-radius:50%; background:var(--brand); }
+  .status.dev{ color:var(--warm-dark); background:var(--warm-tint); }
+  .status.dev .dot{ background:var(--warm); }
   .star{ appearance:none; border:none; background:transparent; cursor:pointer; color:var(--ink-faint); width:29px; height:29px; border-radius:8px; display:flex; align-items:center; justify-content:center; transition:.14s; }
   .star:hover{ background:var(--bg-2); color:var(--warm); }
   .star:focus-visible{ outline:none; box-shadow:var(--focus); }
@@ -394,7 +396,7 @@
     { id:'inicio',      label:'Inicio' },
     { id:'dashboards',  label:'Dashboards' },
     { id:'reportes',    label:'Reportes',       soon:true },
-    { id:'anulaciones', label:'Anulaciones',    soon:true },
+    { id:'anulaciones', label:'Anulaciones' },
     { id:'layout',      label:'Layout General', url:'https://bgarciaga.github.io/Layout.github.io/' },
     { id:'herramientas',label:'Herramientas' }
   ];
@@ -404,7 +406,7 @@
       desc:'Capacidad y ocupación del CD Villa Nueva en tiempo real, con vistas por zona y por rack.' },
     { id:'reportes',    icon:IC.report, title:'Reportes', status:'off',
       desc:'Informes periódicos de operación: productividad, movimientos y cumplimiento de KPIs.' },
-    { id:'anulaciones', icon:IC.ban,    title:'Anulaciones', status:'off',
+    { id:'anulaciones', icon:IC.ban,    title:'Anulaciones', status:'on', forceLabel:true,
       desc:'Registro y control de anulaciones de operaciones, con motivo, responsable y trazabilidad.' },
     { id:'layout',      icon:IC.layout, title:'Layout General', status:'on',
       url:'https://bgarciaga.github.io/Layout.github.io/',
@@ -445,6 +447,28 @@
   /* Modulos con clave de acceso. La clave vive en el codigo fuente:
      protege de un vistazo casual, no de alguien que inspeccione el HTML. */
   var LOCKS = { herramientas:'Slotting2026$' };
+
+  /* Tarjetas de "proximo lanzamiento" para modulos aun en desarrollo.
+     due: fecha objetivo fija (cuenta regresiva de 15 dias desde su creacion). */
+  var UPCOMING = {
+    anulaciones: [
+      {
+        id:'incidencias', title:'Incidencias', area:'Anulaciones', icon:IC.ban,
+        desc:'Análisis de anulaciones por operador: Picking, Montacarguistas, Monitores.',
+        due:'2026-09-25T00:00:00'
+      },
+      {
+        id:'anulaciones-fillrate', title:'Anulaciones Fill Rate', area:'Anulaciones', icon:IC.ban,
+        desc:'Motivos de anulaciones, cantidad de pedidos cancelados e incumplimiento del Fill Rate.',
+        due:'2026-09-30T00:00:00'
+      }
+    ]
+  };
+  function countdownText(dueIso){
+    var days=Math.ceil((new Date(dueIso).getTime()-Date.now())/86400000);
+    if(days<=0) return 'Disponible en cualquier momento';
+    return days+(days===1?' dia restante':' dias restantes');
+  }
 
   /* Filtros de la pantalla de catalogos. Algunos son marcadores de posicion
      (aun sin logica) para cuando el equipo defina los criterios. */
@@ -574,7 +598,7 @@
   function goDash(){ location.hash='#/dashboards'; }
 
   function renderHome(){
-    var active=MODULES.filter(function(m){return m.status==='on';}).length;
+    var active=MODULES.filter(function(m){return m.status==='on' && !m.forceLabel;}).length;
     var soon=MODULES.length-active;
     viewEl.innerHTML =
       '<section class="view">' +
@@ -597,12 +621,13 @@
         '<div class="mod-grid">' +
           MODULES.map(function(m){
             var on=m.status==='on';
+            var showActive=on && !m.forceLabel;
             return '<div class="mod '+(on?'link':'soon')+'" data-id="'+m.id+'">' +
               '<div class="mod-ic">'+m.icon+'</div>' +
               '<h3>'+m.title+(LOCKS[m.id]?IC.lock:'')+'</h3>' +
               '<p>'+m.desc+'</p>' +
               '<div class="foot">' +
-                (on ? '<span class="tag on">Activo</span><span class="go">Entrar '+IC.go+'</span>'
+                (showActive ? '<span class="tag on">Activo</span><span class="go">Entrar '+IC.go+'</span>'
                     : '<span class="tag off">Próximamente</span>') +
               '</div>' +
             '</div>';
@@ -771,6 +796,25 @@
   }
 
   function renderStub(mod){
+    var upList=UPCOMING[mod.id];
+    var upHtml='';
+    if(upList && upList.length){
+      upHtml =
+        '<div class="sec-head"><h2>Próximo lanzamiento</h2><span class="rule"></span></div>' +
+        '<div class="grid">' +
+          upList.map(function(up){
+            return '<div class="card">' +
+              '<div class="card-top">' +
+                '<div class="card-ic">'+up.icon+'</div>' +
+                '<span class="status dev"><span class="dot"></span>En desarrollo</span>' +
+              '</div>' +
+              '<div class="card-body"><h3>'+up.title+'</h3><span class="kb">'+up.area+'</span>' +
+                '<p class="desc" style="margin-top:8px">'+up.desc+'</p></div>' +
+              '<div class="card-foot"><span class="last">'+countdownText(up.due)+'</span></div>' +
+            '</div>';
+          }).join('') +
+        '</div>';
+    }
     viewEl.innerHTML =
       '<section class="view"><div class="stub">' +
         '<div class="stub-ic">'+mod.icon+'</div>' +
@@ -779,7 +823,7 @@
         '<p>'+mod.desc+'</p>' +
         '<p>El equipo de <strong>Slotting Guatemala</strong> está desarrollando esta sección. Estará disponible en una próxima actualización del portal.</p>' +
         '<a class="btn primary" href="#/inicio">Volver al inicio '+IC.arrow+'</a>' +
-      '</div></section>';
+      '</div>' + upHtml + '</section>';
   }
 
   /* ---------- Router ---------- */
