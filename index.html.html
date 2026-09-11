@@ -287,6 +287,34 @@
   .stub .badge{ display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.08em; color:var(--warm-dark); background:var(--warm-tint); border-radius:999px; padding:5px 11px; margin-bottom:14px; }
   .stub p{ color:var(--ink-soft); font-size:14px; line-height:1.6; margin:0 0 22px; }
 
+  /* ===== Lock modal ===== */
+  .lockbox-overlay{
+    position:fixed; inset:0; z-index:100; background:rgba(10,12,8,.5);
+    display:flex; align-items:center; justify-content:center; padding:20px;
+    animation:fade .18s ease both;
+  }
+  .lockbox{
+    width:340px; max-width:100%; background:var(--surface); border:1px solid var(--line-strong);
+    border-radius:18px; padding:26px; box-shadow:var(--shadow-hi); text-align:center;
+  }
+  .lockbox-ic{
+    width:48px; height:48px; border-radius:12px; background:var(--brand-tint); color:var(--brand-dark);
+    display:flex; align-items:center; justify-content:center; margin:0 auto 14px;
+  }
+  .lockbox-ic svg{ width:22px; height:22px; margin:0; }
+  .lockbox h3{ font-family:'Archivo',sans-serif; font-weight:700; font-size:17px; margin:0 0 6px; }
+  .lockbox p{ margin:0 0 16px; color:var(--ink-soft); font-size:13px; line-height:1.5; }
+  .lockbox input{
+    width:100%; font-family:'IBM Plex Mono',monospace; font-size:14px; color:var(--ink);
+    background:var(--bg-2); border:1px solid var(--line-strong); border-radius:9px;
+    padding:11px 12px; text-align:center; transition:.14s;
+  }
+  .lockbox input:focus{ outline:none; border-color:var(--brand); box-shadow:var(--focus); }
+  .lockbox-err{ display:none; color:#D0342C; font-size:12px; margin:8px 0 0; }
+  .lockbox-err.show{ display:block; }
+  .lockbox-actions{ display:flex; gap:10px; justify-content:center; margin-top:18px; }
+  .lockbox-actions .btn{ flex:1; justify-content:center; }
+
   /* ===== Footer ===== */
   footer{
     border-top:1px solid var(--line); margin-top:10px;
@@ -357,7 +385,8 @@
     arrow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
     search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>',
     rows:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>',
-    cols:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="8" height="16"/><rect x="13" y="4" width="8" height="16"/></svg>'
+    cols:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="8" height="16"/><rect x="13" y="4" width="8" height="16"/></svg>',
+    lock:'<svg class="ico-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:12px;height:12px;margin-left:5px;vertical-align:middle"><rect x="4.5" y="10.5" width="15" height="9.5" rx="2"/><path d="M7.5 10.5V7.5a4.5 4.5 0 0 1 9 0v3"/></svg>'
   };
 
   /* ---------- Config ---------- */
@@ -413,6 +442,10 @@
     herramientas:{ title:'Herramientas', subtitle:'Selecciona una herramienta, ajusta los filtros y ábrela en una nueva pestaña.', items:TOOLS }
   };
 
+  /* Modulos con clave de acceso. La clave vive en el codigo fuente:
+     protege de un vistazo casual, no de alguien que inspeccione el HTML. */
+  var LOCKS = { herramientas:'Slotting2026$' };
+
   /* Filtros de la pantalla de catalogos. Algunos son marcadores de posicion
      (aun sin logica) para cuando el equipo defina los criterios. */
   var FILTERS = [
@@ -460,16 +493,60 @@
         return '<a href="'+n.url+'" target="_blank" rel="noopener" data-id="'+n.id+'">'+n.label+'</a>';
       }
       return '<a href="#/'+n.id+'" data-id="'+n.id+'" class="'+(n.id===active?'active':'')+'">'+
-        n.label + (n.soon?'<span class="soon-dot" title="Próximamente"></span>':'') + '</a>';
+        n.label + (n.soon?'<span class="soon-dot" title="Próximamente"></span>':'') + (LOCKS[n.id]?IC.lock:'') + '</a>';
     }).join('');
     document.getElementById('nav').innerHTML = html;
     document.getElementById('footNav').innerHTML = NAV.map(function(n){
       if(n.url) return '<a href="'+n.url+'" target="_blank" rel="noopener">'+n.label+'</a>';
-      return '<a href="#/'+n.id+'">'+n.label+'</a>';
+      return '<a href="#/'+n.id+'" data-id="'+n.id+'">'+n.label+'</a>';
     }).join('');
-    Array.prototype.forEach.call(document.querySelectorAll('#nav a'), function(a){
-      a.addEventListener('click', function(){ header.classList.remove('open'); });
-    });
+    function guardNavClick(a){
+      a.addEventListener('click', function(e){
+        header.classList.remove('open');
+        var id=a.dataset.id;
+        if(id && LOCKS[id]){
+          e.preventDefault();
+          requestUnlock(id, function(){ unlockedModule=id; location.hash='#/'+id; });
+        }
+      });
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('#nav a'), guardNavClick);
+    Array.prototype.forEach.call(document.querySelectorAll('#footNav a[data-id]'), guardNavClick);
+  }
+
+  /* ---------- Locks ----------
+     unlockedModule solo vive en memoria: se limpia al salir del modulo,
+     asi que cada nueva entrada vuelve a pedir la clave. */
+  var unlockedModule=null;
+  var lockOverlay=null;
+  function closeLock(){ if(lockOverlay){ lockOverlay.remove(); lockOverlay=null; } }
+  function requestUnlock(id, onSuccess){
+    closeLock();
+    lockOverlay=document.createElement('div');
+    lockOverlay.className='lockbox-overlay';
+    lockOverlay.innerHTML =
+      '<div class="lockbox">' +
+        '<div class="lockbox-ic">'+IC.lock+'</div>' +
+        '<h3>Acceso restringido</h3>' +
+        '<p>Este modulo requiere una clave para continuar.</p>' +
+        '<input type="password" id="lockInput" placeholder="Clave de acceso" autocomplete="off">' +
+        '<p class="lockbox-err" id="lockErr">Clave incorrecta.</p>' +
+        '<div class="lockbox-actions">' +
+          '<button class="btn ghost" id="lockCancel">Cancelar</button>' +
+          '<button class="btn primary" id="lockOk">Entrar</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(lockOverlay);
+    var input=document.getElementById('lockInput'), err=document.getElementById('lockErr');
+    input.focus();
+    function tryUnlock(){
+      if(input.value===LOCKS[id]){ closeLock(); onSuccess(); }
+      else{ err.classList.add('show'); input.value=''; input.focus(); }
+    }
+    document.getElementById('lockOk').addEventListener('click', tryUnlock);
+    document.getElementById('lockCancel').addEventListener('click', closeLock);
+    input.addEventListener('keydown', function(e){ if(e.key==='Enter') tryUnlock(); });
+    lockOverlay.addEventListener('click', function(e){ if(e.target===lockOverlay) closeLock(); });
   }
 
   /* ---------- Favorites ---------- */
@@ -522,7 +599,7 @@
             var on=m.status==='on';
             return '<div class="mod '+(on?'link':'soon')+'" data-id="'+m.id+'">' +
               '<div class="mod-ic">'+m.icon+'</div>' +
-              '<h3>'+m.title+'</h3>' +
+              '<h3>'+m.title+(LOCKS[m.id]?IC.lock:'')+'</h3>' +
               '<p>'+m.desc+'</p>' +
               '<div class="foot">' +
                 (on ? '<span class="tag on">Activo</span><span class="go">Entrar '+IC.go+'</span>'
@@ -537,8 +614,13 @@
     Array.prototype.forEach.call(viewEl.querySelectorAll('.mod.link'), function(el){
       el.addEventListener('click', function(){
         var m=MODULES.filter(function(x){ return x.id===el.dataset.id; })[0];
-        if(m && m.url) window.open(m.url,'_blank','noopener');
-        else location.hash='#/'+el.dataset.id;
+        if(!m) return;
+        var proceed=function(){
+          if(m.url) window.open(m.url,'_blank','noopener');
+          else location.hash='#/'+m.id;
+        };
+        if(LOCKS[m.id]) requestUnlock(m.id, function(){ unlockedModule=m.id; proceed(); });
+        else proceed();
       });
     });
   }
@@ -704,6 +786,15 @@
   function route(){
     var id=(location.hash.replace(/^#\/?/,'').split('?')[0]) || 'inicio';
     if(!NAV.some(function(n){ return n.id===id; })) id='inicio';
+    if(LOCKS[id]){
+      if(unlockedModule!==id){
+        if(location.hash!=='#/inicio') location.hash='#/inicio';
+        requestUnlock(id, function(){ unlockedModule=id; location.hash='#/'+id; });
+        return;
+      }
+    } else {
+      unlockedModule=null;
+    }
     buildNav(id);
     window.scrollTo({ top:0, behavior:'auto' });
     if(id==='inicio') renderHome();
