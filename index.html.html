@@ -703,17 +703,19 @@ document.addEventListener('DOMContentLoaded', async function() {
     var fin = function (texto) { if (!cerrado) { cerrado = true; listo(texto); } };
     setTimeout(function () { fin('Registro enviado'); }, 6000);
 
-    // El flujo de Power Automate espera el cuerpo JSON del esquema.
-    // 'text/plain' evita la verificación previa de CORS, que un archivo
-    // local no puede superar; el flujo igual recibe el JSON.
+    // Publicado en https se manda como JSON real; si el navegador lo bloquea,
+    // el aviso viaja como imagen (GET).
     try {
       fetch(ENDPOINT, {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(carga)
-      }).then(function () {
-        fin(nuevo ? 'Alerta de usuario nuevo enviada' : 'Ingreso notificado');
+      }).then(function (r) {
+        if (r && (r.ok || r.status === 202 || r.type === 'opaque')) {
+          fin(nuevo ? 'Alerta de usuario nuevo enviada' : 'Ingreso notificado');
+        } else {
+          beacon(carga, fin);
+        }
       }).catch(function () {
         beacon(carga, fin);
       });
