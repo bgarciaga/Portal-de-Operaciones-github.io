@@ -425,6 +425,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   var LIMITE = 20 * 60 * 1000; // 20 minutos sin actividad
 
   vigilarMenu();
+  interceptarAlertas();
 
   var sesionPrevia = leerS('acceso.sesion');
   if (sesionPrevia && sesionPrevia.correo) {
@@ -562,6 +563,78 @@ document.addEventListener('DOMContentLoaded', async function() {
     }, 500);
   }
 
+  // Las alertas que el portal manda por correo (clave incorrecta en modulos
+  // protegidos) se desvian al mismo flujo, sin abrir Outlook.
+  function interceptarAlertas() {
+    var abrir = window.open;
+    window.open = function (url) {
+      if (typeof url === 'string' && url.indexOf('mailto:') === 0) { desviar(url); return null; }
+      return abrir.apply(window, arguments);
+    };
+    document.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href^="mailto:"]') : null;
+      if (!a || a.getAttribute('data-soporte')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      desviar(a.getAttribute('href'));
+    }, true);
+  }
+
+  function escapar(t) {
+    return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function desviar(url) {
+    if (!ENDPOINT) { try { window.location.href = url; } catch (e) {} return; }
+    var resto = url.slice(7).split('?');
+    var ps = {};
+    (resto[1] || '').split('&').forEach(function (par) {
+      var i = par.indexOf('=');
+      if (i > 0) ps[par.slice(0, i)] = decodeURIComponent(par.slice(i + 1).replace(/\+/g, ' '));
+    });
+    var sesion = leerS('acceso.sesion') || {};
+    var asunto = ps.subject || 'Alerta del Portal de Operaciones';
+    var cuerpo = ps.body || '';
+    var html =
+      '<div style="background:#f4f3ef;padding:24px 0;font-family:Arial,Helvetica,sans-serif">' +
+        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;background:#fff;border:1px solid #e2e1da;border-radius:12px;overflow:hidden">' +
+          '<tr><td style="background:#00591F;padding:20px 24px">' +
+            '<div style="font:800 18px/1.2 Arial,sans-serif;color:#fff">Portal de Operaciones</div>' +
+            '<div style="margin-top:6px;font:700 11px/1.2 Arial,sans-serif;color:#FF9201;letter-spacing:.18em">ALERTA DE SEGURIDAD</div>' +
+          '</td></tr>' +
+          '<tr><td style="padding:20px 24px">' +
+            '<pre style="margin:0;font:400 13px/1.6 Consolas,monospace;color:#171a17;white-space:pre-wrap">' + escapar(cuerpo) + '</pre>' +
+          '</td></tr>' +
+          (sesion.nombre
+            ? '<tr><td style="padding:0 24px 20px"><p style="margin:0;font:400 12px/1.5 Arial,sans-serif;color:#8b938c">Sesion activa: ' + escapar(sesion.nombre) + ' (' + escapar(sesion.correo || '') + ')</p></td></tr>'
+            : '') +
+        '</table>' +
+      '</div>';
+
+    var carga = {
+      token: TOKEN,
+      tipo: 'seguridad',
+      nombre: sesion.nombre || 'Sin sesion',
+      email: sesion.correo || '',
+      asunto: asunto,
+      mensaje: cuerpo,
+      html: html,
+      area: sesion.area || '',
+      cargo: sesion.cargo || '',
+      telefono: sesion.telefono || '',
+      motivo: 'Alerta de seguridad',
+      hora: new Date().toLocaleString('es-GT', { dateStyle: 'medium', timeStyle: 'short' }),
+      nuevo: '0'
+    };
+    try {
+      fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(carga)
+      }).catch(function () { beacon(carga, function () {}); });
+    } catch (e) { beacon(carga, function () {}); }
+  }
+
   function montarBarra(sesion) {
     var raiz = document.documentElement;
     if (!raiz) return;
@@ -625,7 +698,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         '<div style="display:flex;flex-direction:column;gap:9px;font-family:' + MONO + ';font-size:12px;color:#8fb89a">' +
           '<div>Dominios permitidos: ' + DOMINIOS.join(', ') + '</div>' +
           '<div>Alerta: ' + AVISO + '</div>' +
-          '<a href="mailto:' + AVISO + '?subject=Soporte%20de%20acceso%20al%20portal" style="margin-top:6px;align-self:flex-start;padding:11px 16px;border:1px solid rgba(255,255,255,.28);border-radius:8px;color:#fff;text-decoration:none;font-family:' + FUENTE + ';font-size:13.5px;font-weight:600">Necesito soporte</a>' +
+          '<a data-soporte="1" href="mailto:' + AVISO + '?subject=Soporte%20de%20acceso%20al%20portal" style="margin-top:6px;align-self:flex-start;padding:11px 16px;border:1px solid rgba(255,255,255,.28);border-radius:8px;color:#fff;text-decoration:none;font-family:' + FUENTE + ';font-size:13.5px;font-weight:600">Necesito soporte</a>' +
         '</div>' +
       '</div>' +
       '<div style="flex:1 1 380px;min-width:300px;padding:48px 44px;display:flex;align-items:center;justify-content:center">' +
