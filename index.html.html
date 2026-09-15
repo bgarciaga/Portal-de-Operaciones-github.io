@@ -410,6 +410,14 @@ document.addEventListener('DOMContentLoaded', async function() {
   function guardar(clave, valor) {
     try { localStorage.setItem(clave, JSON.stringify(valor)); } catch (e) {}
   }
+  // La sesion vive solo mientras la pestana este abierta: cada entrada nueva
+  // vuelve a pedir el registro y dispara la alerta.
+  function leerS(clave) {
+    try { return JSON.parse(sessionStorage.getItem(clave) || 'null'); } catch (e) { return null; }
+  }
+  function guardarS(clave, valor) {
+    try { sessionStorage.setItem(clave, JSON.stringify(valor)); } catch (e) {}
+  }
 
   var capa = null;
   var barra = null;
@@ -418,7 +426,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   vigilarMenu();
 
-  var sesionPrevia = leer('acceso.sesion');
+  var sesionPrevia = leerS('acceso.sesion');
   if (sesionPrevia && sesionPrevia.correo) {
     if (vencida()) {
       olvidar();
@@ -430,15 +438,15 @@ document.addEventListener('DOMContentLoaded', async function() {
   }
 
   function marcarActividad() {
-    try { localStorage.setItem('acceso.actividad', String(Date.now())); } catch (e) {}
+    try { sessionStorage.setItem('acceso.actividad', String(Date.now())); } catch (e) {}
   }
   function vencida() {
     var t = 0;
-    try { t = parseInt(localStorage.getItem('acceso.actividad') || '0', 10); } catch (e) {}
+    try { t = parseInt(sessionStorage.getItem('acceso.actividad') || '0', 10); } catch (e) {}
     return !!t && (Date.now() - t) > LIMITE;
   }
   function olvidar() {
-    try { localStorage.removeItem('acceso.sesion'); localStorage.removeItem('acceso.actividad'); } catch (e) {}
+    try { sessionStorage.removeItem('acceso.sesion'); sessionStorage.removeItem('acceso.actividad'); } catch (e) {}
   }
   function cerrarSesion(motivo) {
     olvidar();
@@ -587,7 +595,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       var reloj = barra.querySelector('[data-reloj]');
       if (!reloj) return;
       var t = 0;
-      try { t = parseInt(localStorage.getItem('acceso.actividad') || '0', 10); } catch (e) {}
+      try { t = parseInt(sessionStorage.getItem('acceso.actividad') || '0', 10); } catch (e) {}
       var resta = Math.max(0, LIMITE - (Date.now() - t));
       var m = Math.floor(resta / 60000), s = Math.floor((resta % 60000) / 1000);
       reloj.textContent = 'Cierre en ' + m + ':' + (s < 10 ? '0' + s : s);
@@ -815,7 +823,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     avisar(fila, nuevo, function (estado) {
       fila.envio = estado;
-      guardar('acceso.sesion', fila);
+      guardarS('acceso.sesion', fila);
       marcarActividad();
       registrado = true;
       if (capa && capa.parentNode) capa.parentNode.removeChild(capa);
