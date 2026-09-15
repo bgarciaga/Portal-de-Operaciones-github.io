@@ -485,7 +485,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       b.type = 'button';
       b.setAttribute('aria-label', lado === 'left' ? 'Ver secciones anteriores' : 'Ver más secciones');
       b.textContent = glifo;
-      b.style.cssText = 'position:absolute;top:50%;transform:translateY(-50%);' + lado + ':-6px;' +
+      b.style.cssText = 'position:absolute;top:50%;transform:translateY(-50%);' + lado + ':-30px;' +
         'z-index:40;width:30px;height:30px;display:flex;align-items:center;justify-content:center;' +
         'border:1px solid #d3d2cb;border-radius:50%;background:#fff;color:#00591F;' +
         'font-size:15px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12);' +
@@ -502,7 +502,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     var der = flecha('right', '\u203A');
 
     var velo = document.createElement('div');
-    velo.style.cssText = 'position:absolute;top:0;bottom:0;right:22px;width:56px;pointer-events:none;z-index:30;' +
+    velo.style.cssText = 'position:absolute;top:0;bottom:0;right:-4px;width:48px;pointer-events:none;z-index:30;' +
       'background:linear-gradient(90deg,rgba(247,243,239,0),rgba(247,243,239,.95))';
     caja.appendChild(velo);
 
