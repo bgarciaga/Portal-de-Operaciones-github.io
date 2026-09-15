@@ -685,12 +685,48 @@ document.addEventListener('DOMContentLoaded', async function() {
       return;
     }
 
+    var etiqueta = nuevo ? 'USUARIO NUEVO' : 'REINGRESO';
+    var filas = [
+      ['Nombre', fila.nombre], ['Correo', fila.correo], ['Área', fila.area],
+      ['Cargo', fila.cargo], ['Teléfono', fila.telefono], ['Motivo', fila.motivo],
+      ['Fecha y hora', fila.hora]
+    ];
+    var celdas = '';
+    for (var f = 0; f < filas.length; f++) {
+      celdas +=
+        '<tr>' +
+        '<td style="padding:11px 16px;border-bottom:1px solid #ecebe5;font:600 12px/1.4 Arial,sans-serif;color:#6d7a6f;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;vertical-align:top">' + filas[f][0] + '</td>' +
+        '<td style="padding:11px 16px;border-bottom:1px solid #ecebe5;font:400 15px/1.45 Arial,sans-serif;color:#171a17">' + (filas[f][1] || '—') + '</td>' +
+        '</tr>';
+    }
+    var html =
+      '<div style="background:#f4f3ef;padding:24px 0;font-family:Arial,Helvetica,sans-serif">' +
+        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;margin:0 auto;background:#ffffff;border:1px solid #e2e1da;border-radius:12px;overflow:hidden">' +
+          '<tr><td style="background:#00591F;padding:22px 24px">' +
+            '<div style="font:800 19px/1.2 Arial,sans-serif;color:#ffffff;letter-spacing:.02em">Portal de Operaciones</div>' +
+            '<div style="margin-top:6px;font:700 11px/1.2 Arial,sans-serif;color:#FF9201;letter-spacing:.18em">' + etiqueta + '</div>' +
+          '</td></tr>' +
+          '<tr><td style="padding:22px 24px 6px">' +
+            '<p style="margin:0 0 14px;font:400 15px/1.5 Arial,sans-serif;color:#3d453e">' +
+              (nuevo
+                ? 'Se registró un usuario nuevo en el Portal de Operaciones de CD Villa Nueva.'
+                : 'Un usuario ya registrado volvió a ingresar al Portal de Operaciones.') +
+            '</p>' +
+            '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #ecebe5;border-radius:8px;border-collapse:separate;overflow:hidden">' + celdas + '</table>' +
+          '</td></tr>' +
+          '<tr><td style="padding:16px 24px 24px">' +
+            '<p style="margin:0;font:400 12px/1.5 Arial,sans-serif;color:#8b938c">Aviso automático del control de accesos. El registro completo queda en el equipo del usuario.</p>' +
+          '</td></tr>' +
+        '</table>' +
+      '</div>';
+
     var carga = {
       token: TOKEN,
       nombre: fila.nombre,
       email: fila.correo,
       asunto: asunto,
       mensaje: mensaje,
+      html: html,
       area: fila.area,
       cargo: fila.cargo,
       telefono: fila.telefono,
@@ -727,7 +763,10 @@ document.addEventListener('DOMContentLoaded', async function() {
   // Respaldo: si el navegador bloquea el POST, el aviso viaja como imagen.
   function beacon(carga, fin) {
     var q = [];
-    for (var k in carga) q.push(encodeURIComponent(k) + '=' + encodeURIComponent(carga[k]));
+    for (var k in carga) {
+      if (k === 'html') continue; // demasiado largo para una direccion
+      q.push(encodeURIComponent(k) + '=' + encodeURIComponent(carga[k]));
+    }
     var img = new Image();
     img.onload = function () { fin('Alerta enviada'); };
     img.onerror = function () { fin('Registro enviado'); };
